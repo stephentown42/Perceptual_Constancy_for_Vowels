@@ -1,0 +1,2 @@
+Trial	CorrectionTrial?	StartTime	CenterReward?	F1	F2	F3	F4	HoldTime	Atten	Pitch	Side	Response	RespTime	Correct	
+1	0	3.5109	0	730	2058	2857	4205	501	-10.0	263	1	0	4.9741	0	
