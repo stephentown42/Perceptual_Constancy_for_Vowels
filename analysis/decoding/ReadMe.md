@@ -23,5 +23,5 @@ Within this parameter space, we then reported the parameters that gave best deco
 ## Statistical Analysis
 
 <p align="center">
-  <img src="assets/Fig_DecoderOrganization_B_timing.jpg" alt="drawing" width="450"/>
+  <img src="assets/Fig_DecoderOrganization_C_permutation.jpg" alt="drawing" width="450"/>
 </p>
