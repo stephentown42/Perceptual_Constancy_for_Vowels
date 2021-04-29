@@ -11,14 +11,15 @@ The majority of analysis is done on time-varying firing rates of units, generate
 * **S**: main results in nested structure with ferret/channel/site organization. Data for one unit for example is accessed as S(1).chan(2).site(3). Data for each unit is stored as cell arrays for each trial parameter (examples below) and firing rates (nHist). Each cell contains data from one testing session. There is also information on the unit's responsiveness in each test session.
 
 --
-| Task Parameter | Field Name | Notes                |
-| -------------- | ---------- | -------------------- |
-| Vowel Identity |  F1        | 460 = /u/, 730 = /e/ |
-| Fundamental Frequency |  F0 | Value in Hz          |
+| Task Parameter | Field Name | Notes                   |
+| -------------- | ---------- | ----------------------- |
+| Vowel Identity |  F1        | 460 = /u/, 730 = /e/    |
+| Fundamental Frequency |  F0 | Value in Hz             |
 | Sound level    | Atten | Level in dB SPL = 60 - Atten |
-| Behavioral Response | Response | 0 = left, 1 = right |
+| Behavioral Response | Response | 0 = left, 1 = right  |
 | Behavioral Accuracy | Correct  | 0 = error, 1 = correct |
-
+| Sound Location | SpatialMask* | 4 = left, 5 = right   |
+| Trial Order    | StartTimes*  | time in seconds       | 
 
 
 
