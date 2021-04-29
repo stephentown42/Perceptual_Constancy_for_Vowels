@@ -21,6 +21,7 @@ Within this parameter space, we then reported the parameters that gave best deco
 
 
 ## Statistical Analysis
+We conducted a permutation test in which the decoding procedure (including temporal optimization) was repeated 100 times but with the decoded feature randomly shuffled between trials to give a null distribution of decoder performance. The null distribution of shuffled decoding performance was parameterized by fitting a Gaussian probability density function, which we then used to calculate the probability of observing the real decoding performance. Units were identified as informative when the probability of observing the real performance after shuffling was < 0.05.
 
 <p align="center">
   <img src="assets/Fig_DecoderOrganization_C_permutation.jpg" alt="drawing" width="450"/>
