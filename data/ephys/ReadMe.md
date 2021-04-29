@@ -8,9 +8,9 @@ The majority of analysis is done on time-varying firing rates of units, generate
 * **options**: includes the edges of the time bins used to generate histograms (nHistEdges), the time window used to assess whether units were responsive (respWind) and some less interesting information about source files, timing offsets and stack info used to generate the file.
 
 
-* **S**: main results in nested structure with ferret/channel/site organization. Data for one unit for example is accessed as S(1).chan(2).site(3). Data for each unit includes trial parameters (examples below), firing rates (nHist) and information on the unit's responsiveness in each test session.
+* **S**: main results in nested structure with ferret/channel/site organization. Data for one unit for example is accessed as S(1).chan(2).site(3). Data for each unit is stored as cell arrays for each trial parameter (examples below) and firing rates (nHist). Each cell contains data from one testing session. There is also information on the unit's responsiveness in each test session.
 
-
+--
 | Task Parameter | Field Name | Notes                |
 | -------------- | ---------- | -------------------- |
 | Vowel Identity |  F1        | 460 = /u/, 730 = /e/ |
