@@ -22,5 +22,5 @@ The majority of analysis is done on time-varying firing rates of units, generate
 | Voicing        | Voicing*     | 0 = "whispered", 1=voiced |
 | Trial Order    | StartTimes*  | time in seconds           | 
 
-\*literalasterisks\* Included in specific files only
+\* Included in specific files only
 
