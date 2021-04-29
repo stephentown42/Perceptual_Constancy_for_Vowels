@@ -14,12 +14,13 @@ The majority of analysis is done on time-varying firing rates of units, generate
 | Task Parameter | Field Name | Notes                   |
 | -------------- | ---------- | ----------------------- |
 | Vowel Identity |  F1        | 460 = /u/, 730 = /e/    |
-| Fundamental Frequency |  F0 | Value in Hz             |
-| Sound level    | Atten | Level in dB SPL = 60 - Atten |
 | Behavioral Response | Response | 0 = left, 1 = right  |
 | Behavioral Accuracy | Correct  | 0 = error, 1 = correct |
+| Sound level    | Atten | Level in dB SPL = 60 - Atten |
+| Fundamental Frequency |  F0* | Value in Hz            |
 | Sound Location | SpatialMask* | 4 = left, 5 = right   |
-| Trial Order    | StartTimes*  | time in seconds       | 
+| Voicing        | Voicing*     | 0 = "whispered", 1=voiced |
+| Trial Order    | StartTimes*  | time in seconds           | 
 
-
+* Included in specific files only
 
