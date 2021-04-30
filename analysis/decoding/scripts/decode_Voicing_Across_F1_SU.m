@@ -19,7 +19,7 @@ if ~isdir(saveDir), mkdir(saveDir); end
 % Options
 options.startTimes = -0.5 : 0.05 : 1;
 options.durations  = 0.01 : 0.01 : 0.5;
-options.BW         = 0.01;
+options.BW         = 0.01;                  % bin width
 options.nIteration = 100;
 
 % Start log file
