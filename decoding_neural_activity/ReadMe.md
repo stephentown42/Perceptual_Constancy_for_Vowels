@@ -26,3 +26,5 @@ We conducted a permutation test in which the decoding procedure (including tempo
 <p align="center">
   <img src="assets/Fig_DecoderOrganization_C_permutation.jpg" alt="drawing" width="500"/>
 </p>
+
+Note that because the decoding process involves an optimization step, the results from decoding of shuffled data will be >50%. This is the result of the decoder selecting the best time window in which to recover shuffled labels.
