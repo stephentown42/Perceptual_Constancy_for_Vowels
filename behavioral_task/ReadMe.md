@@ -20,9 +20,9 @@ Much of the code for each level follows the same basic logic in which the progra
 #### Test levels:
 
 * Vowels varying in fundamental frequency: 
-[Level 07.m](https://github.com/stephentown42/Perceptual_Constancy_for_Vowels/blob/main/behavioral_task/GoFerret/ST_TimbreDiscrimination/stages/level07.m),
-[Level 17.m](https://github.com/stephentown42/Perceptual_Constancy_for_Vowels/blob/main/behavioral_task/GoFerret/ST_TimbreDiscrimination/stages/level17.m),
-[Level 37.m](https://github.com/stephentown42/Perceptual_Constancy_for_Vowels/blob/main/behavioral_task/GoFerret/ST_TimbreDiscrimination/stages/level37.m)
+[Level 07.m](https://github.com/stephentown42/Perceptual_Constancy_for_Vowels/blob/main/behavioral_task/GoFerret/ST_TimbreDiscrimination/stages/level07.m) (two tokens),
+[Level 17.m](https://github.com/stephentown42/Perceptual_Constancy_for_Vowels/blob/main/behavioral_task/GoFerret/ST_TimbreDiscrimination/stages/level17.m) (two tokens),
+[Level 37.m](https://github.com/stephentown42/Perceptual_Constancy_for_Vowels/blob/main/behavioral_task/GoFerret/ST_TimbreDiscrimination/stages/level37.m) (one token)
 * Voiceless (whispered) vowels: [Level 09.m](https://github.com/stephentown42/Perceptual_Constancy_for_Vowels/blob/main/behavioral_task/GoFerret/ST_TimbreDiscrimination/stages/level09.m)
 * 
 
