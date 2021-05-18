@@ -1,7 +1,7 @@
-function level7
+function level37
 
-% Level 7: 
-% Two or more stimuli are presented 
+% Level 37: 
+% One vowel are presented 
 % Presentations are limited to hold times (i.e. no repetition)
 % Mistakes lead to time outs
 
@@ -9,7 +9,6 @@ global DA gf h
 % DA: TDT connection structure
 % gf: Go ferrit user data
 % h:  Online GUI handles
-% rstr: Online raster 
 
 try
 
@@ -58,13 +57,7 @@ switch gf.status
         %%%%% KATH ADDED THIS BIT!!!!!!
         if gf.side>1
             gf.side=-1;
-        end
-        
-        
-        
-        % Use a random number to pick sound index; sound probabilities biased by gf.soundCumulP        
-%         sideIdx = findnearest(rand(1), gf.soundCumulP, 1);
-%         gf.side = gf.sides(sideIdx);     
+        end                           
         
         % Monitor trial history
         gf.trialHistory(gf.TrialNumber) = gf.side;            
@@ -100,19 +93,13 @@ switch gf.status
             gf.holdSamples = ceil((gf.holdMin / 1000) * gf.fStim);
             gf.pitch       = gf.mismatchPitch;
         end
+                
         
-        % Compensate for slight differences in loudness
-%         if ismember(gf.formants,[936,1551,2975,4263],'rows'), gf.atten = gf.atten - 5; end
-%         if ismember(gf.formants,[460 1105 2857 4205],'rows'), gf.atten = gf.atten - 5; end        
-%         if ismember(gf.formants,[730 2058 2857 4205],'rows'), gf.atten = gf.atten - 2; end
-        
-        
-        % Generate sound
-        
+        % Generate sound        
         sound  = ComputeTimbreStim(gf.formants);             % create vowel
         isi    = zeros(1, ceil(gf.isi/1000 * gf.fStim));     % add interstimulus interval  
         holdOK = length(sound) + length(isi);                % point in stimulus that the ferret must hold to        
-        sound  = [sound, isi, sound.*0];                        % create two vowels with two intervals
+        sound  = [sound, isi, sound.*0];                     % create one vowel with second stimulus silenced
         
         
         % Calculate timing information
@@ -151,8 +138,6 @@ switch gf.status
         DA.SetTargetVal( sprintf('%s.centerEnable',     gf.stimDevice), 1);                         
         DA.SetTargetVal( sprintf('%s.repeatPlayEnable', gf.stimDevice), 0);                 % Disable OpenEx driven sound repetition
         DA.SetTargetVal( sprintf('%s.repeatPlay',       gf.stimDevice), 0);                 % Disable Matlab driven sound repetition
-        %DA.SetTargetVal( sprintf('%s.ledEnable',        gf.stimDevice), 0);                 % Disable constant LED in hold time
-        %DA.SetTargetVal( sprintf('%s.spoutPlayEnable',  gf.stimDevice), 0);                 % Disable sound in hold time
             
         % Update online GUI       
         set(h.status,     'string',sprintf('%s',gf.status))
@@ -375,9 +360,6 @@ end
 
 %Update timeline
 updateTimeline(20)
-
-% Update neural data
-% updateRaster
 
 
 catch err
