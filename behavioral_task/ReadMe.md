@@ -7,7 +7,7 @@ The task works by setting / reading values on the Tucker Davis Technologies Open
 ### Tasks:
 Task folders are held within the GoFerret main directory and represent the initial branching point to allow testing for different projects through the same system. [**ST_TimbreDiscrimination**](https://github.com/stephentown42/Perceptual_Constancy_for_Vowels/tree/main/behavioral_task/GoFerret/ST_TimbreDiscrimination) represents one example for this project; however others will likely be made available in future in other repositories soon.
 
-### Levels:
+### Stages:
 
 Much of the code for each level follows the same basic logic in which the program is in one of four states:
 
@@ -16,16 +16,26 @@ Much of the code for each level follows the same basic logic in which the progra
 * *WaitForResponse*: Checking the circuit to determine if a response has been made at a peripheral location, or abort trial if too much time has elapsed
 * *Timeout*: Waiting for a set period following an error, before allowing the next trial
 
+
+#### Test levels:
+
+* Vowels varying in fundamental frequency: 
+[Level 07.m](https://github.com/stephentown42/Perceptual_Constancy_for_Vowels/blob/main/behavioral_task/GoFerret/ST_TimbreDiscrimination/stages/level07.m),
+[Level 17.m](https://github.com/stephentown42/Perceptual_Constancy_for_Vowels/blob/main/behavioral_task/GoFerret/ST_TimbreDiscrimination/stages/level17.m),
+[Level 37.m](https://github.com/stephentown42/Perceptual_Constancy_for_Vowels/blob/main/behavioral_task/GoFerret/ST_TimbreDiscrimination/stages/level37.m)
+* Voiceless (whispered) vowels: [Level 09.m](https://github.com/stephentown42/Perceptual_Constancy_for_Vowels/blob/main/behavioral_task/GoFerret/ST_TimbreDiscrimination/stages/level09.m)
+* 
+
+
+
 #### Training levels:
 
 
-###
 
 
 
 
-* Level 09: Voiceless (whispered) vowels
-* 
+
 
 
 ### Compatibility:
