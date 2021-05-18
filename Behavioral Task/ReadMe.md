@@ -5,7 +5,7 @@
 The task works by setting / reading values on the Tucker Davis Technologies Open Ex system using Open Developer libaries.
 
 ### Tasks:
-Tasks folders are held within the GoFerret main directory and represent the initial branching point to allow testing for different projects through the same system. **ST_TimbreDiscrimination** represents one example for this project; however others will likely be made available in future in other repositories soon.
+Task folders are held within the GoFerret main directory and represent the initial branching point to allow testing for different projects through the same system. **ST_TimbreDiscrimination** represents one example for this project; however others will likely be made available in future in other repositories soon.
 
 
 ### Compatibility:
