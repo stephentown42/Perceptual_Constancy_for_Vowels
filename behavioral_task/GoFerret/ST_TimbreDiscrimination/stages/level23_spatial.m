@@ -1,25 +1,33 @@
-function level10
+function level23_spatial
+try
+% Level 8 Noise
+% Options:  
+%     Discrete / Continuous
+%     Spatially separated / collocalized
+%          
+% Spatial separation options:
+%   Signal(Left) + Noise (Right)
+%   Signal(Right) + Noise (Left)
+%   Signal(Both) + Noise (Both)
 
-% Level 10
+    
 
-global DA gf h rstr
+global DA gf h 
 % DA: TDT connection structure
 % gf: Go ferrit user data
 % h:  Online GUI handles
-% rstr: Online raster 
-
-try
 
 %GUI Clock
 gf.sessionTime = (now - gf.startTime)*(24*60*60);
 set(h.sessionLength,'string', sprintf('%0.1f secs',gf.sessionTime));
 
-% TDT time
-gf.tStim = DA.GetTargetVal( sprintf( '%s.zTime',  gf.stimDevice)) ./ gf.fStim;
-gf.tRec  = DA.GetTargetVal( sprintf( '%s.zTime',  gf.recDevice)) ./ gf.fRec;
-
+%Check sensor inputs
+bits = [0       2       1];
+vars = {'left','center','right'};
+    
 %Run case
 switch gf.status
+
 %__________________________________________________________________________    
     case('PrepareStim')
         
@@ -27,53 +35,40 @@ switch gf.status
         gf.correctionTrial = 0;
         
         
-        % Use a random number to pick sound index; sound probabilities biased by gf.soundCumulP        
-        sideIdx = findnearest(rand(1), gf.soundCumulP, 1);
-        gf.side = gf.sides(sideIdx); 
-        
-         % Monitor trial history
-        gf.trialHistory(gf.TrialNumber) = gf.side;            
-        
-        % Conditional arguments 
-        startTrials    = 5;                % No test stimuli in the first N trials
-        testRefractory = 2; 
-        
-        if gf.TrialNumber > startTrials,
-        
-            if all(gf.trialHistory(gf.TrialNumber: -1 : gf.TrialNumber - testRefractory)==-1), %#ok<*EFIND>
-                gf.status = 'PrepareStim';
-                return
-            end
-        else
-            if gf.side < 0,                        
-                gf.status = 'PrepareStim';
-                return                
-            end
+        % Create stimulus grid        
+        if ~isfield(gf,'nStim'), 
+            gf.sideList  = 0 : 1;                       
+            gf.attnRange = gf.attenMin :(gf.attenMax - gf.attenMin)/ gf.attenSteps : gf.attenMax;    
+            gf.maskCases = 0 : 5;            
+            gf.nStim     = length(gf.attnRange) * length(gf.sideList) * length(gf.maskCases);   
+            gf.stimIdx   = gf.nStim + 1;
         end
+
+        % Reset stimulus grid
+        if gf.stimIdx > gf.nStim
+            [attnIdx, sideIdx, maskIdx] = ind2sub([ length(gf.attnRange),...
+                                                    length(gf.sideList),...
+                                                    length(gf.maskCases)],...
+                                                    randperm(gf.nStim));
+
+            gf.stimOrder = [attnIdx', sideIdx', maskIdx'];
+            gf.stimIdx   = 1;
+        end
+
+        % Select parameters for current trial
+        gf.atten   = gf.attnRange( gf.stimOrder( gf.stimIdx, 1));
+        gf.side    = gf.sideList(  gf.stimOrder( gf.stimIdx, 2));
+        gf.mask    = gf.maskCases( gf.stimOrder( gf.stimIdx, 3));
+        gf.stimIdx = gf.stimIdx + 1;
         
-        
-        gf.formants = eval(sprintf('gf.sound%d',sideIdx - 1));
-        
-        % Use a random number to pick sound index; sound probabilities biased by gf.soundCumulP        
-%         sideIdx = findnearest(rand(1), gf.soundCumulP, 1);
-%         gf.side = gf.sides(sideIdx);     
-        
+        gf.formants = eval(sprintf('gf.sound%d',gf.side));
+                
         % Monitor trial history
         gf.trialHistory(gf.TrialNumber) = gf.side;            
                 
-        % Calculate hold range, attenuation & pitch
-        %
-        % Generate gf.holdTime etc from variables declared in parameters 
-        %
-        % May be changed between stimuli, open to user control
-        %
-        % Developer note, these functions should be changed to state input
-        % and output arguements. Both functions are the same and should be
-        % combined to improve efficiency.
+        % Calculate hold time       
+        calculateHoldTimes      
         
-        calculateHoldTimes        
-        calculateAtten
-       
         %calculatePitch                
         if gf.pInd == 0,
             gf.pitchInd = randperm(length(gf.pitchRange));
@@ -86,49 +81,73 @@ switch gf.status
             gf.pInd = 0;
         end
         
-        % Make hold time minimum for mismatch (side = -1) stimuli
-        if gf.side == -1,
-            gf.holdTime    = gf.holdMin;
-            gf.holdSamples = ceil((gf.holdMin / 1000) * gf.fStim);            
-            gf.atten       = gf.attenMin;
-            gf.pitch = 200;
-        end
-        
         % Compensate for slight differences in loudness
 %         if ismember(gf.formants,[936,1551,2975,4263],'rows'), gf.atten = gf.atten - 5; end
 %         if ismember(gf.formants,[460 1105 2857 4205],'rows'), gf.atten = gf.atten - 5; end        
 %         if ismember(gf.formants,[730 2058 2857 4205],'rows'), gf.atten = gf.atten - 2; end
         
         
-        % Generate sound
-        if gf.side == -1,
-            sound  = ComputeSingleFormantVowels(gf.formants);             % create vowel
-        else
-            sound  = ComputeTimbreStim(gf.formants);             % create vowel
-        end
-        
-        isi    = zeros(1, ceil(gf.isi/1000 * gf.fStim));     % add interstimulus interval
+        % Generate sound        
+        sound  = ComputeTimbreStim(gf.formants);             % create vowel
+        isi    = zeros(1, ceil(gf.isi/1000 * gf.fStim));     % add interstimulus interval  
         holdOK = length(sound) + length(isi);                % point in stimulus that the ferret must hold to        
         sound  = [sound, isi, sound];                        % create two vowels with two intervals
-        
-        
-        % Calculate timing information
-        playDelay = gf.holdSamples - holdOK;
-        refractS  = playDelay + length(sound) + ceil(gf.refractoryTime * gf.fStim);
-        absentS   = ceil(gf.absentTime * gf.fStim);
         
         % Calibrate sounds
         sound0 = conv(sound, gf.fltL.flt, 'same');
         sound1 = conv(sound, gf.fltR.flt, 'same');
         
-%         sound0 = sound; %calibrateSignal(sound, gf.calibDir, 1);
-%         sound1 = sound; %calibrateSignal(sound, gf.calibDir, 1);
         
         % Side dependent calibration
-        [Left_attn, Right_attn] = getCalibAtten(63.5);
+        [Left_attn, Right_attn] = getCalibAtten(65.5);
         sound0 = sound0 .* 10 ^(-(Left_attn/20));
-        sound1 = sound1 .* 10 ^(-(Right_attn/20));    
+        sound1 = sound1 .* 10 ^(-(Right_attn/20));
         
+        % Generate background noise
+        if isfield(gf,'continuousNoise'),
+            
+            DA.SetTargetVal( sprintf('%s.contNoise', gf.stimDevice), 1);  
+            DA.SetTargetVal( sprintf('%s.contNoiseAttn', gf.stimDevice), 10^(-(gf.noiseAttn/20)));            
+            DA.SetTargetVal( sprintf('%s.noiseAmp', gf.stimDevice), 0.3);
+           
+        else            
+            noise  = rand(size(sound));
+            noise  = noise .* 10^(-(gf.noiseAttn/20));
+            noise  = envelope(noise,ceil(0.005.*gf.fStim));
+            
+            % Assign signal and noise to speakers depending on mask case
+            switch gf.mask,         
+                
+                case 0              % Both from left
+                    sound0 = noise + sound0;
+                    sound1 = 0.*sound1;
+                    
+                case 1              % Both from  right
+                    sound0 = 0.* sound0;
+                    sound1 = noise + sound1;
+                    
+                case 2              % Signal left; noise right
+                    sound0 = sound0;
+                    sound1 = noise;
+            
+                case 3              % Signal right; noise left
+                    sound0 = noise;
+                    sound1 = sound1;
+                    
+                case 4              % Signal left only
+                    sound0 = sound0;
+                    sound1 = sound1.*0;
+                case 5              % Signal right only
+                    sound0 = noise.*0;
+                    sound1 = sound1;
+            end                        
+        end
+        
+        % Calculate timing information
+        playDelay = gf.holdSamples - holdOK;
+        refractS  = playDelay + length(sound) + ceil(gf.refractoryTime * gf.fStim);
+        absentS   = ceil(gf.absentTime * gf.fStim);
+               
         % Write sound to buffers
         DA.WriteTargetVEX(sprintf('%s.sound0', gf.stimDevice), 0, 'F32', sound0); % Play from 
         DA.WriteTargetVEX(sprintf('%s.sound1', gf.stimDevice), 0, 'F32', sound1); % both speakers
@@ -147,8 +166,6 @@ switch gf.status
         DA.SetTargetVal( sprintf('%s.centerEnable',     gf.stimDevice), 1);                         
         DA.SetTargetVal( sprintf('%s.repeatPlayEnable', gf.stimDevice), 0);                 % Disable OpenEx driven sound repetition
         DA.SetTargetVal( sprintf('%s.repeatPlay',       gf.stimDevice), 0);                 % Disable Matlab driven sound repetition
-        %DA.SetTargetVal( sprintf('%s.ledEnable',        gf.stimDevice), 0);                 % Disable constant LED in hold time
-        %DA.SetTargetVal( sprintf('%s.spoutPlayEnable',  gf.stimDevice), 0);                 % Disable sound in hold time
             
         % Update online GUI       
         set(h.status,     'string',sprintf('%s',gf.status))
@@ -158,26 +175,10 @@ switch gf.status
         set(h.currentStim,'string',sprintf('%d, %d, %d, %d', gf.formants)) 
         set(h.atten,      'string',sprintf('%.1f dB', gf.atten))        
         set(h.trialInfo,  'string',sprintf('%d', gf.TrialNumber - 1))
-        
-        
-        % Conditional arguments 
-        startTrials   = 5;                % No test stimuli in the first N trials
-        testRefractory = 2; 
-        
-        if gf.TrialNumber > startTrials,
-        
-            if ~all(gf.trialHistory(gf.TrialNumber: -1 : gf.TrialNumber - testRefractory)==-1), %#ok<*EFIND>
-                gf.status = 'WaitForStart';
-            else
-                gf.status = 'PrepareStim';
-            end
-        else
-            if gf.side >= 0,                        
-                gf.status = 'WaitForStart';
-            else
-                gf.status = 'PrepareStim';
-            end
-        end
+                
+        % Move to next status
+        gf.status = 'WaitForStart';
+
         
         
 % Center Response__________________________________________________________        
@@ -193,7 +194,25 @@ switch gf.status
             
             %Flash LED
             DA.SetTargetVal(sprintf('%s.flashEnable',gf.stimDevice),1);
-            comment = 'LED flashing, waiting for center lick';
+            
+            switch gf.mask
+                case 0
+                    comment = 'Sound, no noise';
+                case 1
+                    comment = 'Sound + Noise from both speakers';
+                case 2
+                    comment = 'Sound-Left,  Noise-Right';
+                case 3
+                    comment = 'Sound-Right, Noise-Left';
+                    
+                case 4
+                    comment = 'Sound-Left only';
+                    
+                case 5
+                    comment = 'Sound-Right only';
+            end
+            
+            comment = strcat(comment, '     LED flashing, waiting for center lick');
             
         else
             DA.SetTargetVal( sprintf('%s.flashEnable',      gf.stimDevice), 0);              
@@ -201,9 +220,11 @@ switch gf.status
             if  gf.correctionTrial == 1;
                 DA.SetTargetVal( sprintf('%s.repeatPlay', gf.stimDevice), isfield(gf,'correctionTrialRepeat')); 
             end
-            
+            %DA.SetTargetVal( sprintf('%s.ledEnable',        gf.stimDevice), 0);                 % Disable constant LED in hold time
+            %DA.SetTargetVal( sprintf('%s.spoutPlayEnable',  gf.stimDevice), 0);                 % Disable sound in hold time
+                                                            
+%             gf.startTrialTime    = DA.GetTargetVal(sprintf('%s.lickTime',gf.stimDevice)) ./ gf.fStim;  %Open Ex
             gf.startTrialTime    = DA.GetTargetVal(sprintf('%s.CenterLickTime',gf.stimDevice)) ./ gf.fStim;  %Open Ex
-%             rstr.startTimes      = [rstr.startTimes gf.startTrialTimes];
             gf.status            = 'WaitForResponse';
             
             % Reward at center spout           
@@ -365,11 +386,11 @@ switch gf.status
             set(h.status,'string',gf.status);
 end
 
+%Check outputs
+% checkOutputs([4 5 6 7]);                                %See toolbox for function
+
 %Update timeline
 updateTimeline(20)
-
-% Update neural data
-% updateRaster
 
 
 catch err
@@ -379,3 +400,4 @@ catch err
     
 end
 
+      
