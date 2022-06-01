@@ -1,23 +1,45 @@
-function getMClustEvents_AlignedInterpolated
+function getMClustEvents_AlignedInterpolated(file_path, save_path)
+% function getMClustEvents_AlignedInterpolated(file_path, save_path)
+%
+% Get candidate events for spike sorting from cleaned neural data
+%
+% Args:
+%   file_path: directory containing cleaned activity in .mat files
+%   save_path: directory in which to output files
 
-filepath = 'C:\Analysis\Clean_Traces';
-savepath = 'C:\Analysis\MClust Events AlignedInterpolated';
+%
+% Version History:
+%   2014: Created by Stephen Town
+%   2022: Updated docs for GitHub (ST) 
 
-% Request directories if they don't exist
-if ~isdir( filepath)    
-    filepath = uigetdir(pwd, 'Please select directory with clean traces');
+
+%%% Input Handling
+%
+% If no input, select file path with timestamps - otherwise check input is correct
+if nargin < 1
+    file_path = uigetdir(pwd,'Select directory containing cleaned neural data');
+else
+    if ~isfolder(file_path)
+        error('Could not find %s', file_path)
+    end
 end
 
-if ~isdir( savepath)    
-    savepath = uigetdir(pwd, 'Please select directory to save MClust events');
+% If no input, select save directory - otherwise check input is correct
+if nargin < 2
+    save_path = uigetdir(pwd,'Where should MClust events be saved?');
+else
+    if ~isfolder(save_path)
+        error('Could not find %s', save_path)
+    end
 end
+
 
 % List files to extract file times from
-files = dir( fullfile( filepath, '*.mat'));
+files = dir( fullfile( file_path, '*.mat'));
 
 % Check there are actually some files to analyze
 if isempty(files)
-    error('Could not find any files in %s', filepath)
+    error('Could not find any files in %s', file_path)
 end
 
 % Fixed parameters
@@ -38,7 +60,8 @@ try
     for i = 1 : length(files)
         
         % Check for existing files
-        saveDir = fullfile( savepath, regexprep(files(i).name,'.mat','_ev'));
+        saveDir = fullfile( save_path, regexprep(files(i).name,'.mat','_ev'));
+
         if isdir(saveDir), continue;
         else mkdir(saveDir)
         end
@@ -46,8 +69,8 @@ try
         tag = [];
         
         % Load cleaned data for each file
-        % (Note that each file represents one hemisphere5
-        filename = fullfile( filepath, files(i).name);
+        % (Note that each file represents one hemisphere
+        filename = fullfile( file_path, files(i).name);
         load( filename)
         
         % Assign tag based on contents
@@ -69,10 +92,10 @@ try
         waveforms  = cell( nTrials, 16);
         
         % For each trial
-        for j = 1 : size(M,1),
+        for j = 1 : size(M, 1),
             
             % Trial start time
-            startTime = M(j,1);
+            startTime = M(j, 1);
             
             % Select the data on all channels for that trial
             trialData = data{j};    % This is inefficient but whatever
@@ -84,8 +107,7 @@ try
                 for k = 1 : 16
                     
                     % Identify threshold crossings
-                    trace     = trialData(:,k)';
-                    %             trace = data{j,k}';
+                    trace = transpose(trialData(:,k));                    
                     threshold = std(single(trace));
                     
                     lb = min([-20 -2.5 * threshold]);
@@ -96,7 +118,7 @@ try
                     ucIdx = find(trace < ub);
                                                             
                     % Remove events exceeding the upper threshold                    
-                    lcIdx = setdiff(lcIdx,ucIdx);                                   %#ok<*FNDSB>
+                    lcIdx = setdiff(lcIdx, ucIdx);                                   %#ok<*FNDSB>
                           
                     % Move to next trial if no events were found
                     if isempty(lcIdx); continue; end
@@ -110,12 +132,12 @@ try
                     
                     % Make row vector
                     if iscolumn(crossThreshold),
-                        crossThreshold = crossThreshold';
+                        crossThreshold = transpose(crossThreshold);
                     end
                     
                     % Get interim waveforms
-                    wvIdx  = bsxfun(@plus, crossThreshold', window);
-                    wv     = trace(wvIdx);
+                    wvIdx = bsxfun(@plus, transpose(crossThreshold), window);
+                    wv    = trace(wvIdx);
                     
                     % Move to next trial if no waveforms are valid
                     if isempty(wv); continue; end
@@ -126,22 +148,22 @@ try
                     % Align events
                     [~, peakIdx] = min(wv,[],2); 
                     peakIdx = round(peakIdx / interpFactor);     % Return interpolated peakIdx to original sample rate
-                    alignmentShift = peakIdx' - alignmentZero;
+                    alignmentShift = transpose(peakIdx) - alignmentZero;
                     alignedCrossings = crossThreshold + alignmentShift;
                     
-                    % Reset events where window cannot fit (i.e. don't
+                    % Reset events where window cannot fit (i.e. do not
                     % throw away, just include without alignment)
                     alignedCrossings(alignedCrossings < nW) = crossThreshold(alignedCrossings < nW);                     
                     alignedCrossings(alignedCrossings > (length(trace)-nW)) = crossThreshold(alignedCrossings > (length(trace)-nW));
                     
                     % Make row vector
                     if iscolumn(alignedCrossings),
-                        alignedCrossings = alignedCrossings';
+                        alignedCrossings = transpose(alignedCrossings);
                     end
                     
                     % Get event times and waveforms
                     ev_t   = crossThreshold ./ fRec;   % Keep event times as the actual threshold crossing
-                    wvIdx  = bsxfun(@plus, alignedCrossings', window); % But sample aligned waveforms
+                    wvIdx  = bsxfun(@plus, transpose(alignedCrossings), window); % But sample aligned waveforms
                     wv     = trace(wvIdx);
                                         
                     % Interpolate waveforms
@@ -162,10 +184,8 @@ try
         
         % For each channel
         for j = 1 : 16,
-            
-            saveName = fullfile( saveDir, sprintf('Chan_%02d.mat',j));
-            
-            % remove empty cells
+                        
+            % Remove empty cells
             for k = size(ev_times,1) : -1 : 1,
                 
                 if isempty(waveforms{k,j}),
@@ -174,10 +194,11 @@ try
                 end
             end
             
-            t   = cell2mat(ev_times(:,j)');
+            t   = cell2mat(transpose(ev_times(:,j)));
             wv  = cell2mat(waveforms(:,j));
             
             % Save data
+            saveName = fullfile( saveDir, sprintf('Chan_%02d.mat',j));
             save( saveName, 't', 'wv')            
         end
     end

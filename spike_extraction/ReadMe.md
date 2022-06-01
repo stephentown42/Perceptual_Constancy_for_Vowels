@@ -57,12 +57,36 @@ An example file can be downloaded from [FigShare](https://figshare.com/articles/
 
 ## 3. Event Detection
 
-Sample times can be found on [FigShare](https://figshare.com/articles/dataset/Example_of_spike_times_extracted_from_clean_data_in_perceptual_constancy_project/19947977)
+
+### Input Files
+Candidate events for spike sorting are extracted from cleaned data using [getMClustEvents_AlignedInterpolated.m](.\getMClustEvents_AlignedInterpolated.m). The function has batch capability and is usually run on several data files (though technically it doesn't matter if there's ten files, or just one). The input files are generated at the end of the cleaning, described above.
+
+### How it works
+
+Spike detection uses a basic threshold detection process to identify times that exceed some negative value. We then take a time window around that threshold crossing, do some realignment to make sure all waveforms are ordered relative to their lowest point (to get a clear picture of spike shape) and then save.
+
+The **time window** for spike selection is an important consideration; here we select a 32 sample window (~1.3 milliseconds) centered about the trough of the spike. Extended the time window to a larger duration might be feasible, but as the window becomes longer, it becomes the more likely that spurious features of the waveform will be introduced into the analysis. For the cleaned signal recorded on each electrode, we only consider spikes that have negative deflections between -2.5 and -6 standard deviations of the signal. These **thresholds** could be changed to make the process more or less selective; the values here were chosen as they tended to work well for the signals we recorded (though more recently we have shifted to using -3 and -8 standard deviations). There is also a hard-limit on the thresholds, to ensure they aren't ridiculously low or high. Finally, we include some **interpolation** to generate a smooth waveform shape from the available data. This can be helpful when it comes to spike sorting later - though the example spike waveforms shown here don't include interpolation (this was a late feature in the project, but it's worked well since then).
+
+
+### Output Files
+
+Seperate .mat files are produced for each channel in an electrode array, and stored in a folder that contains all outputs for that array (e.g. left auditory cortex, held in a directory with the SU2 suffix in the name). An example output directory can be found in [data/spike_times](..\data\spike_times), although for size considerations, only one channel is included ([Chan_06.mat](..\data\spike_times\Chan_06.mat)). Further examples can be downloaded from [FigShare](https://figshare.com/articles/dataset/Example_of_spike_times_extracted_from_clean_data_in_perceptual_constancy_project/19947977).
+
+| Variable | Description |
+| -------- | -------------------------------------------------------------------------------------------------------|
+| t        | a *1-by-n* array containing timestamps for *n* spikes, with times in seconds|
+| wv       | an *n-by-m* array containing *n* waveforms, each with *m* samples|
+
 
 
 ## 4. Spike Sorting in MClust
 
-[MClust](https://github.com/adredish/MClust-Spike-Sorting-Toolbox) is a separate application, designed by the Redish lab; however the version (v.3.5)  used in this project on perceptual constancy predates the version of MClust available on GitHub, and used a custom loading function ([loadTDT_PerceptualConstancy.m](spike_extraction\MClust_LoadingFcns\loadTDT_PerceptualConstancy.m)) designed specifically for the data format currently used. Most of the custom functions are listed in "MClust_mods", where some code has been adapted. 
+### Input Files
+Spike sorting procedes one channel at a time, using the individual .mat files outputted by the event detection stage described above.
+
+### MClust
+
+[MClust](https://github.com/adredish/MClust-Spike-Sorting-Toolbox) is a separate application, designed by the Redish lab; however the version (v.3.5)  used in this project on perceptual constancy predates the version of MClust available on GitHub, and used a custom loading function ([loadTDT_PerceptualConstancy.m](.\MClust_mods\loadTDT_PerceptualConstancy.m)) designed specifically for the data format currently used. Most of the custom functions are listed in "MClust_mods", where some code has been adapted. 
 
 One important consideration is that MClust is designed to work with tetrode data, and so to get single channel data into MClust, we replicate the signal on each channel. The default settings for MCLust are also overriden so that features are only calculated on a single channel. The screenshot below shows MClust on startup, illustrating the functionality:
 
@@ -82,3 +106,11 @@ A particularly useful tool for noisy data is the *waveform cutter*, which allows
 Below is the same unit after some quick cleaning to remove large noisy events... note that clustering approaches will just split the data into multiple parts that include both noise and signal and, at least in my experience, don't do well at sorting single electrode data.
 
 <img src="../img/MClust_Sort2.png" alt="The same unit above, but after using the waveform cutter"> <br>
+
+
+### Output
+
+When loading spikes for analysis, MClust creates a number of feature files (see the feature selection dialog box in the initial MClust GUI) with the *.fd suffix. These are not critical in the long-term and can be regenerated if needed; however examples are included in the repository for completeness.
+
+After spike sorting, the user selects 'Write Files' and a separate .mat file is saved in the same directory as the input data, with the cluster number as a suffix. The respository includes an example in which the input file 'Chan_06.mat' has been sorted and saved, resulting in the output file 'Chan_06 **_1** .mat'. This contains the spike times (TS, an *p-by-1* vector) of a subset of spikes from the input file, assigned to the cluster. This can then be used for future decoding or cross-referencing waveform shape etc.) 
+
