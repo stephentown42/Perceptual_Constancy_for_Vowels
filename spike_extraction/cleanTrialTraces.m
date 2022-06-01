@@ -2,10 +2,17 @@ function cleanTrialTraces(file_path, save_path)
 % function cleanTrialTraces(file_path, save_path)
 %
 % Clean chunks of high-pass neural activity recorded on multiple channel
-
-% Define paths
-file_path = 'C:\Analysis\Trial_Traces';
-save_path = 'C:\Analysis\Clean_Traces';
+%
+% Args:
+%   file_path: directory containing trial trace files (.mat) with chunked data
+%   save_path: directory in which to save cleaned data
+%
+% Returns:
+%   Saves .mat files containing cleaned data
+%
+% Version History:
+%   2014: Created by Stephen Town
+%   2022: Updated for GitHub by ST
 
 
 %%% Input Handling
@@ -119,4 +126,3 @@ for i = 1 : length(files)
     end
 end
 
-getMClustEvents_AlignedInterpolated
