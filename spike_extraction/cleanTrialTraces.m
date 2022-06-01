@@ -1,31 +1,38 @@
-function cleanTrialTraces
+function cleanTrialTraces(file_path, save_path)
+% function cleanTrialTraces(file_path, save_path)
+%
+% Clean chunks of high-pass neural activity recorded on multiple channel
 
 % Define paths
-filepath = 'C:\Analysis\Trial_Traces';
-savePath = 'C:\Analysis\Clean_Traces';
+file_path = 'C:\Analysis\Trial_Traces';
+save_path = 'C:\Analysis\Clean_Traces';
 
-% Request directories if they don't exist
-if ~isdir( filepath)    
-    filepath = uigetdir(pwd, 'Please select directory with trial traces');
+
+%%% Input Handling
+%
+% If no input, select directory containing trial trace files
+if nargin < 1
+    file_path = uigetdir(pwd, 'Please select directory with trial traces');
 end
 
-if ~isdir( savePath)    
-    savePath = uigetdir(pwd, 'Please select directory to save clean traces');
+if nargin < 2
+    save_path = uigetdir(pwd, 'Please select directory to save clean traces');
 end
-
-files = dir( fullfile( filepath, '*.mat'));
 
 % Channels for analysis
 SU2_chans = 1:16;
 SU3_chans = 17:32;
 chans     = [SU2_chans' SU3_chans'];
 
-% For each file
+%%% Main loop
+%
+% For each file containing trial traces
+files = dir( fullfile( file_path, '*.mat'));
 for i = 1 : length(files)
     
     % Path names
     filename = files(i).name;
-    saveName = fullfile(savePath, filename);
+    saveName = fullfile(save_path, filename);
     
     saveNameL = regexprep(saveName,'.mat','_SU2.mat');
     saveNameR = regexprep(saveName,'.mat','_SU3.mat');
@@ -36,7 +43,7 @@ for i = 1 : length(files)
     end
     
     % Load trialTrace data
-    load( fullfile( filepath, filename))
+    load( fullfile( file_path, filename))
     
     % Set constants and arrays
     nTrials = size(trialTraces,1);                                              %#ok<*NODEF>
@@ -46,8 +53,7 @@ for i = 1 : length(files)
     cleanTrials_SU3 = cell(nTrials, 1);
     
     % Transpose so that every row is a channel and every column a trial
-    trialTraces = trialTraces';
-    
+    trialTraces = transpose(trialTraces);
     
     % Clean data for each trial
     try
@@ -81,14 +87,14 @@ for i = 1 : length(files)
             
             if ~isempty(tdata)
                 % Select channels and clean data
-                SU2_data        = tdata(:, SU2_chans);
-                SU2_clean       = CleanData(double(SU2_data), 0);
+                SU2_data = tdata(:, SU2_chans);
+                SU2_clean = CleanData(double(SU2_data), 0);
                 cleanTrials_SU2{j} = single(SU2_clean(:,1:length(SU2_chans)));    % Send voltages but not principle components to array
                 
                 % Select channels and clean data
                 if nChan > 16,
-                    SU3_data        = tdata(:, SU3_chans);
-                    SU3_clean       = CleanData(double(SU3_data), 0);
+                    SU3_data = tdata(:, SU3_chans);
+                    SU3_clean = CleanData(double(SU3_data), 0);
                     cleanTrials_SU3{j} = single(SU3_clean(:,1:length(SU3_chans)));         % Send voltages but not principle components to array
                 end
             end

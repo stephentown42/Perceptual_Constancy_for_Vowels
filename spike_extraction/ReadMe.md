@@ -35,7 +35,7 @@ The image below shows real chunks (grey zones) taken from the sample data availb
 <img src="../img/SU2_trial_trace_example.png" alt="Example chunks from sample data">
 
 
-### Output data
+### Output Files
 
 An example file containing chunked neural data, ahead of cleaning can be found [here](https://figshare.com/articles/dataset/Example_of_chunked_neural_data_from_perceptual_constancy_project/19947965). It contains:
 
@@ -50,10 +50,34 @@ An example file containing chunked neural data, ahead of cleaning can be found [
 <br>
 
 ## 2. Clean Trial Traces
-Note that cleaning is performed separately on data recorded from each different array (e.g. left and right auditory cortex). This is because each array is considered to be independent, as it has a separate connection to the TDT system.
+
+To clean data chunks, call [cleanTrialTraces.m](./cleanTrialTraces.m).
+
+### Input Files
+
+Input files are the trial trace output files described above.
+
+### How It Works
+
+cleanTrialTraces.m runs as a batch function, where it detects all .mat files stored in the input directory and assumes that each contains trial traces. It then iterates through each file, cleaning the chunks of data 
+
+The function [CleanData.m](./CleanData.m) is called on each chunk of data and returns a matrix with the cleaned data in, plus some components scores that we don't include in the output. Input values must be either double or single data types, and chunks cannot contain NaNs, and any missing data needs to be replaced with a holding value such as zero.
+
+Cleaning is performed separately on data recorded from each different array (e.g. left and right auditory cortex). This is because each array is considered to be independent, as it has a separate connection to the TDT system. The output is also then split into separate files for the cleaned data from each array.
 
 
-An example file can be downloaded from [FigShare](https://figshare.com/articles/dataset/Example_of_cleaned_neural_data_from_perceptual_constancy_project/19947944)
+### Output Files
+
+Separate files are saved for each array (e.g. left and right auditory cortex, with SU2 and SU3 suffixes). An example can be downloaded from [FigShare](https://figshare.com/articles/dataset/Example_of_cleaned_neural_data_from_perceptual_constancy_project/19947944)
+
+
+| Variable     | Description |
+| ------------ | -------------------------------------------------------------------------------------------------------|
+| bdata        | struct containing the original behavioral data used to generate timestamps |
+| M            | an *n-by-2* array containing the start and end times of each chunk, where *n* is the number of chunks |
+| cleanTrials_SU2 | an *n-by-1* cell array of *n* chunks; each cell contains a *p-by-m* matrix of cleaned signals from *m* electrodes |
+| chans | an *m-by-2* array containing channel numbers (this is largely superfluous, given the information in the current readMe) |
+
 
 ## 3. Event Detection
 
