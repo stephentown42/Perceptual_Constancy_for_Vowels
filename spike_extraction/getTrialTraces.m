@@ -154,8 +154,7 @@ for i = length(files) : -1 : 1,
         bdata.data(end,:) = [];
         R  = bdata.RespTime;
     end
-    
-    
+        
     % Get stimulus onset times (S) and response times (R)
     S = bdata.data(:, strcmp(bdata.colheaders, 'StartTime'));
     S  = S - offset;                    % Convert trial start into stimulus onset
@@ -171,7 +170,7 @@ for i = length(files) : -1 : 1,
     % Calculate midpoints between trials (M)
     M = [];
     M(:,1) = S - iti_HW(1:end-1);           % Start time
-    M(:,2) = R + iti_HW(2:end);                % End time
+    M(:,2) = R + iti_HW(2:end);             % End time
     
     % Convert M to samples (Ms)
     Ms = round( M.*fRec);
@@ -188,8 +187,7 @@ for i = length(files) : -1 : 1,
     if ~TT.SelectBlock( block),
         warning('Could not open %s %s',tank,block);
         continue
-    end
-    
+    end    
     
     %  Save workspace
     saveName  = fullfile(saveDir, strcat(fileName,'.mat'));
