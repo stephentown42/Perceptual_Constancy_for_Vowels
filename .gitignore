@@ -1,45 +1,9 @@
-#--------------------------#
-# Magento Default Files    #
-#--------------------------#
 
-/PATCH_*.sh
-
-/app/etc/local.xml
-
-/media/*
-!/media/.htaccess
-
-!/media/customer
-/media/customer/*
-!/media/customer/.htaccess
-
-!/media/dhl
-/media/dhl/*
-!/media/dhl/logo.jpg
-
-!/media/downloadable
-/media/downloadable/*
-!/media/downloadable/.htaccess
-
-!/media/xmlconnect
-/media/xmlconnect/*
-
-!/media/xmlconnect/custom
-/media/xmlconnect/custom/*
-!/media/xmlconnect/custom/ok.gif
-
-!/media/xmlconnect/original
-/media/xmlconnect/original/*
-!/media/xmlconnect/original/ok.gif
-
-!/media/xmlconnect/system
-/media/xmlconnect/system/*
-!/media/xmlconnect/system/ok.gif
-
-/var/*
-!/var/.htaccess
-
-!/var/package
-/var/package/*
-!/var/package/*.xml
-
+# Do not include folders containing large datasets #
+# (These can be downloaded from: #
+/data/trial_traces
+/data/clean_traces
+data/spike_times/03_04_2014 level17_pitch_test_F&V 14_31 Block4-68_SU3_ev
+data/spike_times/03_04_2014 level17_pitch_test_F&V 14_31 Block4-68_SU2_ev
+!data/spike_times/03_04_2014 level17_pitch_test_F&V 14_31 Block4-68_SU2_ev/Chan_06_1.mat
+!data/spike_times/03_04_2014 level17_pitch_test_F&V 14_31 Block4-68_SU2_ev/*06*
