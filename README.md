@@ -8,6 +8,12 @@ Data and analysis code for investigation into neural activity in auditory cortex
 
 The majority of data analysis was performed in Matlab (version 2014 or later) but the data was collected using GoFerret 1.0 and Matlab 2013b. For advanced analysis with original data held in TDT file types, you will also need to install [OpenDeveloper](https://www.tdt.com/component/opendeveloper/) (Tucker Davis Technologies).
 
+For running live scripts, you'll need to add the 'lib' directory to the Matlab path to use helper functions, e.g.:
+
+```Matlab
+addpath('home/stephen/GitHub/perceptual_constancy_for_vowels/lib')
+```
+
 ## Review the data analysis scripts
 
 ### Data visualization
