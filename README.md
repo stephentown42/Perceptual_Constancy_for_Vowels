@@ -12,7 +12,7 @@ The majority of data analysis was performed in Matlab (version 2014 or later) bu
 
 * Plot behavioral performance 
 * Visualize activity of individual neurons
-* Decode sounds presented to listeners from individual neuron activity
+* Decode sounds presented to listeners from individual neuron activity (<a href="./README.md">ReadMe</a>)(Script)
 * Decode sounds presented to listeners from activity of neural populations
 * Compare hyperparameters that best decode different sound features
 * Predict future choices of listeners from individual neuron activity
