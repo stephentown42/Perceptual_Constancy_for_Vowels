@@ -11,6 +11,7 @@ The majority of data analysis was performed in Matlab (version 2014 or later) bu
 ## Review the data analysis scripts
 
 ### Data visualization
+* Plot sound spectra (script)
 * Plot behavioral performance
 * Visualize activity of individual neurons
 
