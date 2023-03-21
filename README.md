@@ -10,14 +10,14 @@ The majority of data analysis was performed in Matlab (version 2014 or later) bu
 
 ## Review the data analysis scripts
 
-<li>Plot behavioral performance</li> 
-* Visualize activity of individual neurons
-* Decode sounds presented to listeners from individual neuron activity (<a href="./decoding_neural_activity/ReadMe.md">ReadMe</a>)(Script)
-* Decode sounds presented to listeners from activity of neural populations
-* Compare hyperparameters that best decode different sound features
-* Predict future choices of listeners from individual neuron activity
-* Compare decoding of neural activity in task engaged and passively listening animals
-* Compare decoding of neural activity in animals with and without behavioral training
+<li>Plot behavioral performance</li>
+<li>Visualize activity of individual neurons</li>
+<li>Decode sounds presented to listeners from individual neuron activity (<a href="./decoding_neural_activity/ReadMe.md">ReadMe</a>)(Script)</li>
+<li>Decode sounds presented to listeners from activity of neural populations</li>
+<li>Compare hyperparameters that best decode different sound features</li>
+<li>Predict future choices of listeners from individual neuron activity</li>
+<li>Compare decoding of neural activity in task engaged and passively listening animals</li>
+<li>Compare decoding of neural activity in animals with and without behavioral training</li>
 
 
 ## Advanced Steps
