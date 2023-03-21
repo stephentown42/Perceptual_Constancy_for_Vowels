@@ -15,7 +15,7 @@ The majority of data analysis was performed in Matlab (version 2014 or later) bu
 * Visualize activity of individual neurons
 
 ### Decoding stimulus features and future behavior from neural activity
-* <a href="./decoding_neural_activity/ReadMe.md">ReadMe</a>
+* Read the introduction describing the motivation and design of decoders for the current study in the <a href="./decoding_neural_activity/ReadMe.md">ReadMe</a>
 * Decode sounds presented to listeners from individual neuron activity (Script)
 * Predict future choices of listeners from individual neuron activity (Script)
 * Decode sounds presented to listeners from activity of neural populations (Script)
