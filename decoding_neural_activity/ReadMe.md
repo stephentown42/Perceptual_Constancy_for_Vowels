@@ -4,10 +4,14 @@
 
 The model design that underlies the project asserts that the brain (specifically auditory cortex) acts as an intermediary in a causal chain between sound presentation and listeners' behavior. We designed our experiment to thus investigate this pathway in highly controlled (and simplified) conditions in which we played one of two sounds and listerners' choices were restricted to one of two options (to make a left or right response). We also recorded from auditory cortical neurons to try and understand how the brain may be generating behavior from auditory input.
 
+<p align="center">
+  <img src="assets/decoding_philosophy_A.png" alt="drawing"/>
+</p>
+
 The diagram below shows the basic model with which we're working and obviously overlooks the fact that the brain is composed of many millions of neurons. We sample the activity of a small number of these neurons, each of which may or may not be involved in the generation of behavior (we cannot say because we lack access to a more detailed causal diagram that accurately captures the connectivity between neurons). Decoding provides a flexible and interpretible way to quantify how much information is available about sound input or behavioral output from the activity pattern of each neuron. We can use either a backwards approach to reconstruct sounds in the past from neural activity observed in the present, or a forwards model that predicts behavioral choices in the future from neural activity in the present. In this study we use both approaches: 
 
 <p align="center">
-  <img src="assets/decoding_philosophy.png" alt="drawing"/>
+  <img src="assets/decoding_philosophy_B.png" alt="drawing"/>
 </p>
 
 
