@@ -18,7 +18,7 @@ addpath('home/stephen/GitHub/perceptual_constancy_for_vowels/lib')
 
 ### Data visualization
 * Plot sound spectra [(notebook)](./live_scripts/vowel_spectra.pdf)
-* Plot behavioral performance
+* Plot behavioral performance [(notebook)](./live_scripts/behavior.pdf)
 * Visualize activity of individual neurons
 
 ### Decoding stimulus features and future behavior from neural activity
