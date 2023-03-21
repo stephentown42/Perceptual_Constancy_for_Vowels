@@ -10,7 +10,7 @@ The majority of data analysis was performed in Matlab (version 2014 or later) bu
 
 ## Review the data analysis scripts
 
-* Plot behavioral performance 
+<li>Plot behavioral performance</li> 
 * Visualize activity of individual neurons
 * Decode sounds presented to listeners from individual neuron activity (<a href="./decoding_neural_activity/ReadMe.md">ReadMe</a>)(Script)
 * Decode sounds presented to listeners from activity of neural populations
