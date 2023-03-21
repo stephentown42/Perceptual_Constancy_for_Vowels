@@ -31,5 +31,5 @@ The majority of data analysis was performed in Matlab (version 2014 or later) bu
 For those users who are interested in replicating or extending the study by collecting new data:
 
 * Generate stimuli
-* Run behavioral task
+* Run behavioral task using [GoFerret](https://github.com/stephentown42/GoFerret/tree/master/timbre_discrimination)
 * Run spike extraction pipeline
