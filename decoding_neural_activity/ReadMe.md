@@ -14,6 +14,8 @@ The diagram above shows the basic model with which we're working and obviously o
   <img src="assets/decoding_philosophy_B.png" alt="drawing"/>
 </p>
 
+For a more extensive discussion of decoding approaches, see [this article](https://www.frontiersin.org/articles/10.3389/fncom.2018.00056/full) in Frontiers by Benjamin et al. (2018) that details with different machine learning methods. For our current purposes, we want a method for which we can interrogate the reasons for decoder "decisions" and that is suitable for use with very small sample sizes (determined by the length of time we could record a neuron and the number of trials a listener would perform, which could be quite short/low in some cases).
+
 
 ## 2. Pattern Classification
 
